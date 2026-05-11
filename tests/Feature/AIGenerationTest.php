@@ -74,6 +74,6 @@ class AIGenerationTest extends TestCase
             ->delete("/questions/{$gen->id}")
             ->assertRedirect();
 
-        $this->assertSoftDeleted('generated_questions', ['id' => $gen->id]);
+        $this->assertDatabaseMissing('generated_questions', ['id' => $gen->id]);
     }
 }

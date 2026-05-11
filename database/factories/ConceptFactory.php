@@ -19,7 +19,7 @@ class ConceptFactory extends Factory
             'title' => fake()->sentence(3),
             'explanation' => fake()->paragraphs(2, true),
             'difficulty' => fake()->randomElement(['junior', 'mid', 'senior']),
-            'status' => fake()->randomElement(['a_revoir', 'en_cours', 'maitrise']),
+            'status' => 'a_revoir',
         ];
     }
 
