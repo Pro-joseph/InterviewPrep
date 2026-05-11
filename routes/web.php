@@ -15,6 +15,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('domains', DomainController::class)->except(['show']);
+    Route::get('/domains/archived', [DomainController::class, 'archived'])->name('domains.archived');
+    Route::post('/domains/{domain}/restore', [DomainController::class, 'restore'])->name('domains.restore');
 
     Route::get('/domains/{domain}/concepts', [ConceptController::class, 'index'])->name('domains.concepts.index');
     Route::get('/domains/{domain}/concepts/create', [ConceptController::class, 'create'])->name('domains.concepts.create');
@@ -27,6 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/concepts/{concept}/status', [ConceptController::class, 'updateStatus'])->name('concepts.status');
 
     Route::post('/concepts/{concept}/generate', [GeneratedQuestionController::class, 'generate'])->name('questions.generate');
+    Route::post('/questions/{question}/verify', [GeneratedQuestionController::class, 'verify'])->name('questions.verify');
     Route::delete('/questions/{question}', [GeneratedQuestionController::class, 'destroy'])->name('questions.destroy');
 
     Route::get('/concepts/archived', [ConceptController::class, 'archived'])->name('concepts.archived');

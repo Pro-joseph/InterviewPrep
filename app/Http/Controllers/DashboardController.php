@@ -26,12 +26,19 @@ class DashboardController extends Controller
                 return $domain;
             });
 
+        $concepts = Concept::where('user_id', $user->id)
+            ->with('domain')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
         return view('dashboard', compact(
             'totalConcepts',
             'masteredConcepts',
             'inProgressConcepts',
             'toReviewConcepts',
-            'domains'
+            'domains',
+            'concepts'
         ));
     }
 }

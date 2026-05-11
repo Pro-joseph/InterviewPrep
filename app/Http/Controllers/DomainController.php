@@ -64,4 +64,25 @@ class DomainController extends Controller
 
         return redirect()->route('domains.index')->with('success', 'Domaine supprimé');
     }
+
+    public function archived()
+    {
+        $archivedDomains = Domain::onlyTrashed()
+            ->where('user_id', auth()->id())
+            ->withCount('concepts')
+            ->orderBy('deleted_at', 'desc')
+            ->paginate(12);
+
+        return view('domains.archived', compact('archivedDomains'));
+    }
+
+    public function restore($id)
+    {
+        $domain = Domain::onlyTrashed()
+            ->where('user_id', auth()->id())
+            ->findOrFail($id);
+        
+        $domain->restore();
+        return back()->with('success', 'Domaine restauré');
+    }
 }

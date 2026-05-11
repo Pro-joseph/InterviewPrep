@@ -1,239 +1,496 @@
-# InterviewPrep - Design Specification
+# DESIGN.md — InterviewPrep
 
-## Aesthetic Direction
-**Theme**: Editorial Moroccan Sunset - Sophisticated dark theme with warm amber/gold accents inspired by Moroccan craftsmanship and the warm tones of a Casablanca sunset.
-
-**Tone**: Professional, refined, warm - balancing technical seriousness with approachability.
+## Stack UI
+- **CSS Framework** : Tailwind CSS v3
+- **Icons** : Heroicons ou Tabler Icons
+- **Fonts** : Inter (Google Fonts)
+- **Composants** : Blade components natifs Laravel
 
 ---
 
-## Design System
+## Palette de couleurs
 
-### Color Palette
+| Rôle | Couleur | Hex |
+|------|---------|-----|
+| Primary | Indigo | `#6366F1` |
+| Success / Maîtrisé | Vert | `#10B981` |
+| Warning / En cours | Ambre | `#F59E0B` |
+| Danger / À revoir | Rouge | `#EF4444` |
+| Background | Gris clair | `#F9FAFB` |
+| Surface | Blanc | `#FFFFFF` |
+| Text primary | Gris foncé | `#111827` |
+| Text secondary | Gris moyen | `#6B7280` |
+| Border | Gris léger | `#E5E7EB` |
+
+---
+
+## Dark Mode
+
+### Palette Dark Mode
+
+| Rôle | Couleur | Hex |
+|------|---------|-----|
+| Primary | Indigo | `#6366F1` |
+| Primary Light | Indigo clair | `#818CF8` |
+| Background | Gris très foncé | `#0F0F0F` |
+| Surface | Gris foncé | `#1A1A1A` |
+| Surface Elevated | Gris moyen foncé | `#252525` |
+| Text primary | Blanc cassé | `#FAFAFA` |
+| Text secondary | Gris clair | `#A3A3A3` |
+| Text muted | Gris foncé | `#6B6B6B` |
+| Border | Gris foncé | `#333333` |
+
+### Implémentation Dark Mode
+
+```html
+{{-- Toggle Dark Mode Button --}}
+<button id="theme-toggle" class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 transition">
+    <svg class="w-5 h-5 sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+    <svg class="w-5 h-5 moon-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+    </svg>
+</button>
+
+{{-- Script pour toggle --}}
+<script>
+    const toggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    
+    // Check preference
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        html.classList.add('dark');
+    }
+    
+    toggle.addEventListener('click', () => {
+        html.classList.toggle('dark');
+        if (html.classList.contains('dark')) {
+            localStorage.theme = 'dark';
+        } else {
+            localStorage.theme = 'light';
+        }
+    });
+</script>
+```
+
+### CSS Dark Mode
+
 ```css
-:root {
-    /* Primary - Warm Amber */
-    --primary-50: #FEF7E8;
-    --primary-100: #FDEECF;
-    --primary-200: #FBDE9F;
-    --primary-300: #F8C76B;
-    --primary-400: #F5B243;
-    --primary-500: #F29B1F;
-    --primary-600: #D4820F;
-    --primary-700: #B46808;
-    --primary-800: #8F5207;
-    --primary-900: #6B3D06;
+/* Tailwind config */
+export default {
+    darkMode: 'class',
+    // ...
+}
 
-    /* Background - Deep Charcoal */
+/* Custom dark styles */
+.dark {
+    --primary: #6366F1;
     --bg-primary: #0F0F0F;
     --bg-secondary: #1A1A1A;
     --bg-tertiary: #252525;
-    --bg-card: #1E1E1E;
-    --bg-elevated: #2A2A2A;
-
-    /* Text */
     --text-primary: #FAFAFA;
     --text-secondary: #A3A3A3;
-    --text-muted: #6B6B6B;
+    --border-color: #333333;
+}
 
-    /* Accent Colors for Domains */
-    --domain-laravel: #FF5722;
-    --domain-php: #777BB4;
-    --domain-mysql: #4479A1;
-    --domain-api: #00BCD4;
-    --domain-oop: #9C27B0;
-    --domain-git: #F05032;
-    --domain-docker: #2496ED;
+.dark body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
 
-    /* Status Colors */
-    --status-review: #EF4444;
-    --status-progress: #F59E0B;
-    --status-mastered: #22C55E;
+.dark .card,
+.dark .card-static {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
 
-    /* Difficulty Colors */
-    --difficulty-junior: #22C55E;
-    --difficulty-mid: #F59E0B;
-    --difficulty-senior: #EF4444;
+.dark .btn-primary {
+    background: var(--primary);
+    color: white;
 }
 ```
 
-### Typography
-- **Display Font**: "Playfair Display" (serif) - for headings, hero text
-- **Body Font**: "DM Sans" - for all body text, clean and readable
-- **Mono Font**: "JetBrains Mono" - for code snippets
+---
 
-### Spacing System
-- Base unit: 4px
-- Scale: 4, 8, 12, 16, 24, 32, 48, 64, 96px
+## Badges statut
+
+```html
+{{-- À revoir --}}
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+    À revoir
+</span>
+
+{{-- En cours --}}
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+    En cours
+</span>
+
+{{-- Maîtrisé --}}
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+    Maîtrisé
+</span>
+```
+
+## Badges difficulté
+
+```html
+{{-- Junior --}}
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+    Junior
+</span>
+
+{{-- Mid --}}
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+    Mid
+</span>
+
+{{-- Senior --}}
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+    Senior
+</span>
+```
 
 ---
 
-## Page Designs
+## Layout principal — `layouts/app.blade.php`
 
-### 1. Welcome Page (landing)
-- Split layout: left side welcome message, right side login/register
-- Animated gradient background (amber to deep charcoal)
-- Logo: "InterviewPrep" with subtle icon
-- Clean form design for authentication
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InterviewPrep — @yield('title')</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased">
 
-### 2. Login Page
-- Centered card on dark background
-- Email and password fields
-- "Remember me" checkbox
-- Link to register
-- Forgot password link
+    {{-- Navbar --}}
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
 
-### 3. Register Page
-- Centered card
-- Name, email, password, confirm password
-- Terms acceptance checkbox
+                {{-- Logo --}}
+                <a href="/dashboard" class="flex items-center gap-2">
+                    <span class="text-indigo-600 font-bold text-xl">InterviewPrep</span>
+                </a>
 
-### 4. Dashboard (Home)
-- Welcome message with user name
-- Stats cards grid:
-  - Total concepts
-  - Mastered concepts
-  - In progress
-  - To review
-- Progress by domain (horizontal bars)
-- Best performing domain
-- Most needs attention domain
-- Recent activity (last added concepts)
-- Quick actions: Add domain, Add concept
+                {{-- Nav links --}}
+                <div class="flex items-center gap-6">
+                    <a href="/domains"
+                       class="text-sm text-gray-600 hover:text-indigo-600 transition">
+                        Mes domaines
+                    </a>
+                    <form method="POST" action="/logout">
+                        @csrf
+                        <button class="text-sm text-gray-500 hover:text-red-500 transition">
+                            Déconnexion
+                        </button>
+                    </form>
+                </div>
 
-### 5. Domains List Page
-- Header with "Mes Domaines" title + Add button
-- Grid of domain cards (3 columns desktop):
-  - Domain name (large)
-  - Color badge
-  - Progress bar (mastered/total)
-  - Stats: X/Y maîtrisés
-  - Actions: Edit, Delete
-- Empty state with call-to-action
+            </div>
+        </div>
+    </nav>
 
-### 6. Domain Create/Edit Modal
-- Modal overlay
-- Name input
-- Color picker (preset colors)
-- Save/Cancel buttons
+    {{-- Flash messages --}}
+    @if(session('success'))
+        <div class="max-w-6xl mx-auto px-4 mt-4">
+            <div class="bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 text-sm">
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
 
-### 7. Concepts List Page (within a domain)
-- Breadcrumb: Dashboard > Domains > [Domain Name]
-- Header: Domain name + Add concept button
-- Filters bar:
-  - Status filter (All, À revoir, En cours, Maîtrisé)
-  - Difficulty filter (All, Junior, Mid, Senior)
-- Grid of concept cards (2 columns):
-  - Title
-  - Difficulty badge (color-coded)
-  - Status badge
-  - Quick status dropdown
-  - Actions: View, Edit, Delete
-- Pagination
+    @if(session('error'))
+        <div class="max-w-6xl mx-auto px-4 mt-4">
+            <div class="bg-red-50 border border-red-200 text-red-800 rounded-lg px-4 py-3 text-sm">
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
 
-### 8. Concept Detail Page
-- Breadcrumb navigation
-- Header section:
-  - Title
-  - Difficulty badge
-  - Status badge
-  - Edit button
-- Content section:
-  - Explanation (rich text)
-- Questions section:
-  - "Générer des questions" button
-  - Generated questions list (accordion style)
-  - Each generation shows date + 5 questions
-  - Delete generation option
+    {{-- Content --}}
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        @yield('content')
+    </main>
 
-### 9. Concept Create/Edit Page
-- Full-page form
-- Title input
-- Domain selector (dropdown)
-- Explanation textarea (with markdown support)
-- Difficulty select (Junior/Mid/Senior)
-- Status select (À revoir/En cours/Maîtrisé)
-- Save/Cancel buttons
-
-### 10. Archived Concepts Page
-- Similar to concepts list but shows archived
-- "Archivés" tab in navigation or separate page
-- Each archived concept shows:
-  - Title
-  - Original domain
-  - Date archived
-  - Restore button
-  - Permanent delete button
+</body>
+</html>
+```
 
 ---
 
-## Component Library
+## Composants Blade réutilisables
 
-### Buttons
-- Primary: Amber background, dark text
-- Secondary: Transparent with amber border
-- Danger: Red background
-- Ghost: No background, text only
-- Icon buttons: Circular, subtle hover
+### Bouton primaire
+```html
+{{-- resources/views/components/button.blade.php --}}
+<button {{ $attributes->merge(['class' => 'inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition']) }}>
+    {{ $slot }}
+</button>
+```
 
-### Cards
-- Dark background (#1E1E1E)
-- Subtle border (1px #333)
-- Rounded corners (12px)
-- Hover: subtle lift effect
-- Shadow: soft drop shadow
+### Card domaine
+```html
+{{-- resources/views/components/domain-card.blade.php --}}
+<div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition">
+    <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full" style="background: {{ $domain->color }}"></span>
+            <h3 class="font-semibold text-gray-900">{{ $domain->name }}</h3>
+        </div>
+        <div class="flex gap-2">
+            <a href="/domains/{{ $domain->id }}/edit" class="text-gray-400 hover:text-indigo-600 transition">
+                ✏️
+            </a>
+            <form method="POST" action="/domains/{{ $domain->id }}">
+                @csrf @method('DELETE')
+                <button class="text-gray-400 hover:text-red-500 transition">🗑️</button>
+            </form>
+        </div>
+    </div>
+    <div class="flex gap-4 text-sm text-gray-500">
+        <span>{{ $domain->concepts_count }} concepts</span>
+        <span class="text-green-600">{{ $domain->maitrise_count }} maîtrisés</span>
+    </div>
+    <a href="/domains/{{ $domain->id }}/concepts"
+       class="mt-4 block text-center text-sm text-indigo-600 hover:underline">
+        Voir les concepts →
+    </a>
+</div>
+```
 
-### Badges
-- Pill shape (rounded-full)
-- Color-coded by type
-- Small text (12px)
-
-### Forms
-- Dark inputs (#252525)
-- Amber focus ring
-- Clear labels above inputs
-- Error messages below inputs
-- Placeholder text in muted color
-
-### Modals
-- Centered, max-width 500px
-- Dark background with blur overlay
-- Smooth fade-in animation
-
-### Progress Bars
-- Rounded, 8px height
-- Animated fill
-- Percentage label
-
-### Dropdowns
-- Custom styled select
-- Dark theme matching design
-- Smooth transition on open
+### Bouton statut rapide
+```html
+{{-- resources/views/components/status-toggle.blade.php --}}
+@php
+    $next = match($concept->status) {
+        'a_revoir' => 'en_cours',
+        'en_cours' => 'maitrise',
+        'maitrise' => 'a_revoir',
+    };
+    $colors = [
+        'a_revoir' => 'bg-red-100 text-red-800 hover:bg-red-200',
+        'en_cours' => 'bg-amber-100 text-amber-800 hover:bg-amber-200',
+        'maitrise' => 'bg-green-100 text-green-800 hover:bg-green-200',
+    ];
+@endphp
+<form method="POST" action="/concepts/{{ $concept->id }}/status">
+    @csrf @method('PATCH')
+    <input type="hidden" name="status" value="{{ $next }}">
+    <button class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition {{ $colors[$concept->status] }}">
+        {{ $concept->statusLabel }}
+    </button>
+</form>
+```
 
 ---
 
-## Animations & Interactions
+## Pages principales
 
-### Page Load
-- Staggered fade-in for cards (50ms delay each)
-- Progress bars animate from 0 to value
+### Liste des domaines — `domains/index.blade.php`
 
-### Hover Effects
-- Cards: subtle lift (translateY -2px)
-- Buttons: brightness increase
-- Links: color transition
+```html
+@extends('layouts.app')
+@section('title', 'Mes domaines')
 
-### Status Change
-- Quick dropdown updates with brief highlight
-- Optimistic UI update
+@section('content')
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Mes domaines</h1>
+    <a href="/domains/create"
+       class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition">
+        + Nouveau domaine
+    </a>
+</div>
 
-### AI Generation
-- Loading spinner with pulsing effect
-- Questions appear with slide-in animation
+@if($domains->isEmpty())
+    <div class="text-center py-16 text-gray-400">
+        <p class="text-lg">Aucun domaine pour l'instant.</p>
+        <a href="/domains/create" class="text-indigo-600 hover:underline mt-2 block">
+            Créer mon premier domaine →
+        </a>
+    </div>
+@else
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        @foreach($domains as $domain)
+            <x-domain-card :domain="$domain" />
+        @endforeach
+    </div>
+@endif
+@endsection
+```
+
+### Liste des concepts — `concepts/index.blade.php`
+
+```html
+@extends('layouts.app')
+@section('title', $domain->name)
+
+@section('content')
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <a href="/domains" class="text-sm text-gray-400 hover:text-indigo-600">← Domaines</a>
+        <h1 class="text-2xl font-bold text-gray-900 mt-1">{{ $domain->name }}</h1>
+    </div>
+    <a href="/domains/{{ $domain->id }}/concepts/create"
+       class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition">
+        + Nouveau concept
+    </a>
+</div>
+
+{{-- Filtres --}}
+<div class="flex gap-2 mb-6">
+    @foreach(['all' => 'Tous', 'a_revoir' => 'À revoir', 'en_cours' => 'En cours', 'maitrise' => 'Maîtrisé'] as $value => $label)
+        <a href="?status={{ $value }}"
+           class="px-3 py-1.5 rounded-lg text-sm font-medium transition
+                  {{ request('status', 'all') === $value
+                     ? 'bg-indigo-600 text-white'
+                     : 'bg-white text-gray-600 border border-gray-200 hover:border-indigo-300' }}">
+            {{ $label }}
+        </a>
+    @endforeach
+</div>
+
+{{-- Table concepts --}}
+<div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+                <th class="text-left px-4 py-3 text-gray-500 font-medium">Titre</th>
+                <th class="text-left px-4 py-3 text-gray-500 font-medium">Niveau</th>
+                <th class="text-left px-4 py-3 text-gray-500 font-medium">Statut</th>
+                <th class="px-4 py-3"></th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            @foreach($concepts as $concept)
+            <tr class="hover:bg-gray-50 transition">
+                <td class="px-4 py-3">
+                    <a href="/concepts/{{ $concept->id }}"
+                       class="font-medium text-gray-900 hover:text-indigo-600">
+                        {{ $concept->title }}
+                    </a>
+                </td>
+                <td class="px-4 py-3">
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-medium
+                        {{ $concept->difficulty === 'junior' ? 'bg-blue-100 text-blue-800' : '' }}
+                        {{ $concept->difficulty === 'mid' ? 'bg-purple-100 text-purple-800' : '' }}
+                        {{ $concept->difficulty === 'senior' ? 'bg-indigo-100 text-indigo-800' : '' }}">
+                        {{ $concept->difficultyLabel }}
+                    </span>
+                </td>
+                <td class="px-4 py-3">
+                    <x-status-toggle :concept="$concept" />
+                </td>
+                <td class="px-4 py-3 text-right">
+                    <a href="/concepts/{{ $concept->id }}/edit"
+                       class="text-gray-400 hover:text-indigo-600 mr-2">✏️</a>
+                    <form method="POST" action="/concepts/{{ $concept->id }}" class="inline">
+                        @csrf @method('DELETE')
+                        <button class="text-gray-400 hover:text-red-500">🗑️</button>
+                    </form>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+@endsection
+```
 
 ---
 
-## Responsive Breakpoints
-- Mobile: < 640px (single column)
-- Tablet: 640px - 1024px (2 columns)
-- Desktop: > 1024px (3-4 columns)
+## Formulaires
+
+### Créer / Modifier un concept
+```html
+<form method="POST" action="{{ $action }}">
+    @csrf
+    @isset($concept) @method('PUT') @endisset
+
+    <div class="space-y-4">
+        {{-- Titre --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Titre</label>
+            <input type="text" name="title"
+                   value="{{ old('title', $concept->title ?? '') }}"
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500
+                          @error('title') border-red-400 @enderror">
+            @error('title')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- Explication --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Explication</label>
+            <textarea name="explanation" rows="6"
+                      class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500
+                             @error('explanation') border-red-400 @enderror">{{ old('explanation', $concept->explanation ?? '') }}</textarea>
+            @error('explanation')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- Difficulté --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Niveau</label>
+            <select name="difficulty"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                @foreach(['junior' => 'Junior', 'mid' => 'Mid', 'senior' => 'Senior'] as $value => $label)
+                    <option value="{{ $value }}"
+                        {{ old('difficulty', $concept->difficulty ?? '') === $value ? 'selected' : '' }}>
+                        {{ $label }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition">
+            {{ isset($concept) ? 'Mettre à jour' : 'Créer le concept' }}
+        </button>
+    </div>
+</form>
+```
+
+---
+
+## Installation Tailwind CSS
+
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+`tailwind.config.js` :
+```js
+export default {
+    content: [
+        './resources/**/*.blade.php',
+        './resources/**/*.js',
+    ],
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+            },
+        },
+    },
+    plugins: [],
+}
+```
+
+`resources/css/app.css` :
+```css
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+```bash
+npm run dev
+```
