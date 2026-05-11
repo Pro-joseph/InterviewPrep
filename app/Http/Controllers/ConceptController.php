@@ -47,6 +47,7 @@ class ConceptController extends Controller
 
     public function show(Domain $domain, Concept $concept)
     {
+        $concept->load('generatedQuestions');
         return view('domains.concepts.show', compact('domain', 'concept'));
     }
 

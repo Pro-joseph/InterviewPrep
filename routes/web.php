@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\ConceptController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GeneratedQuestionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,6 +25,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/domains/{domain}/concepts/{concept}', [ConceptController::class, 'destroy'])->name('domains.concepts.destroy');
 
     Route::patch('/concepts/{concept}/status', [ConceptController::class, 'updateStatus'])->name('concepts.status');
+
+    Route::post('/concepts/{concept}/generate', [GeneratedQuestionController::class, 'generate'])->name('questions.generate');
+    Route::delete('/questions/{question}', [GeneratedQuestionController::class, 'destroy'])->name('questions.destroy');
 
     Route::get('/concepts/archived', [ConceptController::class, 'archived'])->name('concepts.archived');
     Route::post('/concepts/{concept}/restore', [ConceptController::class, 'restore'])->name('concepts.restore');
