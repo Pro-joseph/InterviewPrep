@@ -148,6 +148,38 @@
                     @endforeach
                 </div>
             </div>
+
+            @if($concepts->isNotEmpty())
+            <div class="card-static p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-display text-lg font-semibold text-primary">Concepts Récents</h3>
+                </div>
+                <div class="space-y-3">
+                    @foreach($concepts as $concept)
+                    <a href="{{ route('domains.concepts.show', [$concept->domain, $concept]) }}" class="flex items-center justify-between p-3 rounded-lg bg-tertiary hover:bg-tertiary/80 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full" style="background: {{ $concept->domain->color }};"></div>
+                            <div>
+                                <p class="font-medium text-primary">{{ $concept->title }}</p>
+                                <p class="text-sm text-muted">{{ $concept->domain->name }}</p>
+                            </div>
+                        </div>
+                        <span class="badge badge-{{ match($concept->status) {
+                            'a_revoir' => 'review',
+                            'en_cours' => 'progress',
+                            'maitrise' => 'mastered'
+                        } }}">
+                            {{ match($concept->status) {
+                                'a_revoir' => 'À revoir',
+                                'en_cours' => 'En cours',
+                                'maitrise' => 'Maîtrisé'
+                            } }}
+                        </span>
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+            @endif
             @else
             <div class="empty-state">
                 <div class="empty-state-icon">

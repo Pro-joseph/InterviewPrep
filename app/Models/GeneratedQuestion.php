@@ -2,15 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GeneratedQuestion extends Model
 {
-    protected $fillable = ['concept_id', 'user_id', 'questions'];
+    use HasFactory;
+    protected $fillable = ['concept_id', 'user_id', 'type', 'questions'];
 
     protected $casts = [
         'questions' => 'array',
+        'type' => 'string',
+    ];
+
+    protected $attributes = [
+        'type' => 'open',
     ];
 
     public function concept(): BelongsTo

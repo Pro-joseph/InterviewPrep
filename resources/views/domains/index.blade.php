@@ -5,12 +5,17 @@
                 <h2 class="font-display text-2xl font-semibold text-primary">Mes Domaines</h2>
                 <p class="text-sm text-secondary mt-1">Gère tes domaines techniques</p>
             </div>
-            <button @click="$dispatch('open-modal', 'create-domain')" class="btn btn-primary">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Nouveau Domaine
-            </button>
+            <div class="flex gap-3">
+                <a href="{{ route('domains.archived') }}" class="btn btn-ghost">
+                    Archivés
+                </a>
+                <button @click="$dispatch('open-modal', 'create-domain')" class="btn btn-primary">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Nouveau Domaine
+                </button>
+            </div>
         </div>
     </x-slot>
 

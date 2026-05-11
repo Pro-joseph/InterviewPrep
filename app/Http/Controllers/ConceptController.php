@@ -12,6 +12,8 @@ class ConceptController extends Controller
 {
     public function index(Request $request, Domain $domain)
     {
+        $this->authorize('view', $domain);
+
         $query = $domain->concepts()->where('user_id', auth()->id());
 
         if ($request->has('status') && $request->status) {
@@ -29,11 +31,14 @@ class ConceptController extends Controller
 
     public function create(Domain $domain)
     {
+        $this->authorize('view', $domain);
         return view('domains.concepts.create', compact('domain'));
     }
 
     public function store(StoreConceptRequest $request, Domain $domain)
     {
+        $this->authorize('view', $domain);
+        
         $domain->concepts()->create([
             'user_id' => auth()->id(),
             'title' => $request->title,
@@ -83,13 +88,13 @@ class ConceptController extends Controller
 
     public function archived()
     {
-        $archived = Concept::onlyTrashed()
+        $archivedConcepts = Concept::onlyTrashed()
             ->where('user_id', auth()->id())
             ->with('domain')
             ->orderBy('deleted_at', 'desc')
             ->paginate(12);
 
-        return view('concepts.archived', compact('archived'));
+        return view('concepts.archived', compact('archivedConcepts'));
     }
 
     public function restore(Concept $concept)

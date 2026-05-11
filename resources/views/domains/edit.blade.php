@@ -11,7 +11,7 @@
     <div class="py-6">
         <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="card-static p-6">
-                <form method="POST" action="{{ route('domains.update', $domain) }}">
+                <form method="POST" action="{{ route('domains.update', $domain) }}" id="updateForm">
                     @csrf
                     @method('PUT')
 
@@ -47,13 +47,9 @@
                     </div>
 
                     <div class="flex justify-between items-center pt-6 border-t border-default">
-                        <form action="{{ route('domains.destroy', $domain) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce domaine ?')">
-                                Supprimer
-                            </button>
-                        </form>
+                        <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                            Supprimer
+                        </button>
 
                         <div class="flex gap-3">
                             <a href="{{ route('domains.index') }}" class="btn btn-ghost">Annuler</a>
@@ -64,4 +60,17 @@
             </div>
         </div>
     </div>
+
+    <form id="deleteForm" method="POST" action="{{ route('domains.destroy', $domain) }}" class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
+
+    <script>
+        function confirmDelete() {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce domaine ?')) {
+                document.getElementById('deleteForm').submit();
+            }
+        }
+    </script>
 </x-app-layout>
