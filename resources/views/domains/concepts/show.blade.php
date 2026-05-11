@@ -26,6 +26,17 @@
 
     <div class="py-6">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            @if(session('success'))
+                <div class="mb-4 p-4 bg-green-500/20 text-green-500 rounded-lg">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="mb-4 p-4 bg-red-500/20 text-red-500 rounded-lg">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 space-y-6">
                     <div class="card-static p-6">
@@ -59,12 +70,15 @@
                     <div class="card-static p-6">
                         <div class="flex items-center justify-between mb-6">
                             <h3 class="font-display text-lg font-semibold text-primary">Questions d'Entretien</h3>
-                            <button @click="$dispatch('open-modal', 'generate-questions')" class="btn btn-primary">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                                </svg>
-                                Générer des questions
-                            </button>
+                            <form action="{{ route('questions.generate', $concept) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                    </svg>
+                                    Générer des questions
+                                </button>
+                            </form>
                         </div>
 
                         @if($concept->generatedQuestions->isEmpty())
@@ -176,28 +190,4 @@
         </div>
     </div>
 
-    <x-modal name="generate-questions">
-        <div class="p-6">
-            <h3 class="font-display text-xl font-semibold text-primary mb-2">Générer des Questions</h3>
-            <p class="text-sm text-secondary mb-6">L'IA va générer 5 questions d'entretien basées sur ce concept</p>
-
-            <div class="p-4 bg-tertiary rounded-lg mb-6">
-                <h4 class="font-semibold text-primary mb-2">{{ $concept->title }}</h4>
-                <p class="text-sm text-secondary line-clamp-3">{{ Str::limit($concept->explanation, 150) }}</p>
-            </div>
-
-            <div class="flex justify-end gap-3">
-                <button type="button" x-on:click="$dispatch('close')" class="btn btn-ghost">Annuler</button>
-                <form action="{{ route('questions.generate', $concept) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-primary">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                        </svg>
-                        Générer
-                    </button>
-                </form>
-            </div>
-        </div>
-    </x-modal>
-</x-app-layout>
+    </x-app-layout>
